@@ -15,7 +15,7 @@ import com.geccocrawler.socks5.handler.ProxyChannelTrafficShapingHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 public class ProxyFlowLog4j implements ProxyFlowLog {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ProxyFlowLog4j.class);
 	
 	public void log(ChannelHandlerContext ctx) {
@@ -25,7 +25,7 @@ public class ProxyFlowLog4j implements ProxyFlowLog {
 		
 		long readByte = trafficShapingHandler.trafficCounter().cumulativeReadBytes();
 		long writeByte = trafficShapingHandler.trafficCounter().cumulativeWrittenBytes();
-		
+
 		logger.info("{},{},{},{}:{},{}:{},{},{},{}", 
 				trafficShapingHandler.getUsername(),
 				trafficShapingHandler.getBeginTime(),

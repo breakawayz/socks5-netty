@@ -26,7 +26,7 @@ public class Socks5PasswordAuthRequestHandler extends SimpleChannelInboundHandle
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, DefaultSocks5PasswordAuthRequest msg) throws Exception {
-		logger.debug("用户名密码 : " + msg.username() + "," + msg.password());
+		logger.info("用户名密码 : " + msg.username() + "," + msg.password());
 		if(passwordAuth.auth(msg.username(), msg.password())) {
 			ProxyChannelTrafficShapingHandler.username(ctx, msg.username());
 			Socks5PasswordAuthResponse passwordAuthResponse = new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS);

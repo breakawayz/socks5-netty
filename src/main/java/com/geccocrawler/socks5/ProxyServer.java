@@ -95,14 +95,14 @@ public class ProxyServer {
 		if(passwordAuth == null) {
 			passwordAuth = new PropertiesPasswordAuth();
 		}
-		EventLoopGroup boss = new NioEventLoopGroup(2);
+		EventLoopGroup boss = new NioEventLoopGroup(10);
 		EventLoopGroup worker = new NioEventLoopGroup();
 		try {
 			ServerBootstrap bootstrap = new ServerBootstrap();
 			bootstrap.group(boss, worker)
 			.channel(NioServerSocketChannel.class)
 			.option(ChannelOption.SO_BACKLOG, 1024)
-			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000)
+			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 40000)
 			.childHandler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {

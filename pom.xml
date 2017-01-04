@@ -4,17 +4,51 @@
 	<groupId>com.geccocrawler</groupId>
 	<artifactId>socks5-netty</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
+	<properties>
+		<logback.version>1.1.7</logback.version>
+		<slf4j.version>1.7.21</slf4j.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 			<version>4.1.6.Final</version>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.21</version>
+		</dependency>
+-->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -27,6 +61,11 @@
 			<version>3.5.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.10</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -35,18 +74,12 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>appassembler-maven-plugin</artifactId>
 				<version>1.10</version>
-				<executions>
-					<execution>
-						<!--执行脚本的id -->
-						<id>generate-jsw-scripts</id>
-						<!--在maven的package阶段执行 -->
-						<phase>package</phase>
-						<goals>
-							<goal>generate-daemons</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
+					<!-- 生成linux, windows两种平台的执行脚本 -->
+					<platforms>
+						<platform>windows</platform>
+						<platform>unix</platform>
+					</platforms>
 					<!--打包后生成的目录位置 -->
 					<target>${project.build.directory}/assembler</target>
 					<!--是否将配置文件包含到classpath -->
@@ -61,43 +94,23 @@
 					<repositoryLayout>flat</repositoryLayout>
 					<!--依赖的lib包的目录名称 -->
 					<repositoryName>lib</repositoryName>
-					<daemons>
-						<daemon>
-							<id>proxy</id>
-							<!--系统的入口main函数类 -->
+
+					<logsDirectory>logs</logsDirectory>
+					<tempDirectory>tmp</tempDirectory>
+					<programs>
+						<program>
+							<id>socksproxy</id>
+							<!-- 启动类 -->
 							<mainClass>com.geccocrawler.socks5.ProxyServer</mainClass>
 							<jvmSettings>
-								<initialMemorySize>256M</initialMemorySize>
-								<maxMemorySize>512M</maxMemorySize>
 								<extraArguments>
-									<extraArgument>-Djava.net.preferIPv4Stack=true</extraArgument>
+									<extraArgument>-server</extraArgument>
+									<extraArgument>-Xmx2G</extraArgument>
+									<extraArgument>-Xms2G</extraArgument>
 								</extraArguments>
 							</jvmSettings>
-							<generatorConfigurations>
-								<generatorConfiguration>
-									<generator>jsw</generator>
-									<includes>
-										<include>linux-x86-64</include>
-										<includ>windows-x86-64</includ>
-									</includes>
-									<configuration>
-										<property>
-											<!--手动添加一个系统启动时依赖的第一个classpath，这里通常写为配置文件的目录名，如果不配置，配置文件无法找到 -->
-											<name>configuration.directory.in.classpath.first</name>
-											<value>conf</value>
-										</property>
-										<property>
-											<name>wrapper.logfile</name>
-											<value>log/app.log</value>
-										</property>
-									</configuration>
-								</generatorConfiguration>
-							</generatorConfigurations>
-							<platforms>
-								<platform>jsw</platform>
-							</platforms>
-						</daemon>
-					</daemons>
+						</program>
+					</programs>
 				</configuration>
 			</plugin>
 		</plugins>

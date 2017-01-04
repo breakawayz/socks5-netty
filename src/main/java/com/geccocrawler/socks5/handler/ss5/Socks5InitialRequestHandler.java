@@ -1,5 +1,6 @@
 package com.geccocrawler.socks5.handler.ss5;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import io.netty.handler.codec.socksx.v5.DefaultSocks5InitialResponse;
 import io.netty.handler.codec.socksx.v5.Socks5AuthMethod;
 import io.netty.handler.codec.socksx.v5.Socks5InitialResponse;
 
+@Slf4j
 public class Socks5InitialRequestHandler extends SimpleChannelInboundHandler<DefaultSocks5InitialRequest> {
 
 	private static final Logger logger = LoggerFactory.getLogger(Socks5InitialRequestHandler.class);
@@ -25,9 +27,9 @@ public class Socks5InitialRequestHandler extends SimpleChannelInboundHandler<Def
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, DefaultSocks5InitialRequest msg) throws Exception {
-		logger.debug("初始化ss5连接 : " + msg);
+		logger.info("初始化ss5连接 : " + msg);
 		if(msg.decoderResult().isFailure()) {
-			logger.debug("不是ss5协议");
+			logger.info("不是ss5协议");
 			ctx.fireChannelRead(msg);
 		} else {
 			if(msg.version().equals(SocksVersion.SOCKS5)) {
